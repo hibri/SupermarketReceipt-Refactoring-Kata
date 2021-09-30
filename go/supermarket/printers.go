@@ -9,13 +9,13 @@ import (
 
 type ReceiptPrinter struct {
 	columns int
-	lp *message.Printer
+	printer *message.Printer
 }
 
 func NewReceiptPrinter() *ReceiptPrinter {
 	var p ReceiptPrinter
 	p.columns = 40
-	p.lp = message.NewPrinter(language.BritishEnglish)
+	p.printer = message.NewPrinter(language.BritishEnglish)
 	return &p
 }
 
@@ -47,7 +47,7 @@ func (p ReceiptPrinter) formatLineWithWhitespace(name string, value string) stri
 	var result strings.Builder
 	fmt.Fprint(&result, name)
 	var whitespaceSize = p.columns - len(name) - len(value)
-	for i := 1; i <= whitespaceSize; i++ {
+	for index := 1; index <= whitespaceSize; index++ {
 		fmt.Fprint(&result, " ")
 	}
 	fmt.Fprintf(&result, "%s\n", value)
@@ -55,7 +55,7 @@ func (p ReceiptPrinter) formatLineWithWhitespace(name string, value string) stri
 }
 
 func (p ReceiptPrinter) presentPrice(price float64) string {
-	return p.lp.Sprintf("%.2f", price)
+	return p.printer.Sprintf("%.2f", price)
 }
 
 func (p ReceiptPrinter) presentQuantity(item ReceiptItem) string {
@@ -63,7 +63,7 @@ func (p ReceiptPrinter) presentQuantity(item ReceiptItem) string {
 	if Each == item.product.unit {
 		result = fmt.Sprintf("%d", int(item.quantity))
 	} else {
-		result = p.lp.Sprintf("%.3f", item.quantity)
+		result = p.printer.Sprintf("%.3f", item.quantity)
 	}
 	return result
 }

@@ -54,3 +54,86 @@ func TestTenPercentDiscount(t *testing.T) {
 	assert.Equal(t, 2.5*1.99, receiptItem.totalPrice)
 	assert.Equal(t, 2.5, receiptItem.quantity)
 }
+
+func TestCalculateThreeForTwoDiscount(t *testing.T) {
+	// ARRANGE
+	var toothbrush = Product{name: "toothbrush", unit: Each}
+	var catalog = NewFakeCatalog()
+	catalog.addProduct(toothbrush, 10.00)
+
+
+
+	var teller = NewTeller(catalog)
+	teller.addSpecialOffer(ThreeForTwo, toothbrush, 20.0)
+
+	var cart = NewShoppingCart()
+	cart.addItemQuantity(toothbrush, 3)
+
+	// ACT
+	var receipt = teller.checksOutArticlesFrom(cart)
+
+	// ASSERT
+	assert.Equal(t, 20.00, receipt.totalPrice())
+
+}
+
+func TestShouldApplyOfferTwoCansOfBeansForThePriceOfOne(t *testing.T) {
+
+	// ARRANGE
+	var canOfBeans = Product{name: "can of beans", unit: Each}
+	var catalog = NewFakeCatalog()
+	catalog.addProduct(canOfBeans, 1.00)
+	
+	var teller = NewTeller(catalog)
+	costAfterDiscount := 1.00
+	teller.addSpecialOffer(TwoForAmount, canOfBeans, costAfterDiscount)
+
+
+	var cart = NewShoppingCart()
+	cart.addItemQuantity(canOfBeans, 2)
+	// ACT
+     receipt := teller.checksOutArticlesFrom(cart)
+	// ASSERT
+	assert.Equal(t, 1.00, receipt.totalPrice())
+}
+
+func TestShouldApplyOfferBuyTwoGetOneHalfPrice(t *testing.T) {
+
+	// ARRANGE
+	var canOfBeans = Product{name: "can of beans", unit: Each}
+	var catalog = NewFakeCatalog()
+	catalog.addProduct(canOfBeans, 1.00)
+
+	var teller = NewTeller(catalog)
+	costAfterDiscount := 1.50
+	teller.addSpecialOffer(TwoForAmount, canOfBeans, costAfterDiscount)
+
+
+	var cart = NewShoppingCart()
+	cart.addItemQuantity(canOfBeans, 2)
+	// ACT
+	receipt := teller.checksOutArticlesFrom(cart)
+	// ASSERT
+	assert.Equal(t, 1.50, receipt.totalPrice())
+}
+
+func TestShouldTotalCostOfTwoItemsWithNoSpecialOffer(t *testing.T) {
+	// ARRANGE
+	var canOfBeans = Product{name: "can of beans", unit: Each}
+	var catalog = NewFakeCatalog()
+	catalog.addProduct(canOfBeans, 1.00)
+
+	var teller = NewTeller(catalog)
+
+	var cart = NewShoppingCart()
+	cart.addItemQuantity(canOfBeans, 2)
+	// ACT
+	receipt := teller.checksOutArticlesFrom(cart)
+	// ASSERT
+	assert.Equal(t, 2.00, receipt.totalPrice())
+}
+
+
+func TestShouldNotApplyBuyTwoGetOneHalfPriceForOneItem(t *testing.T) {
+
+}

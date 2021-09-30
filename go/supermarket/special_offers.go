@@ -11,8 +11,8 @@ const (
 
 type SpecialOffer struct {
 	offerType SpecialOfferType
-	product Product
-	argument float64
+	product           Product
+	costAfterDiscount float64
 }
 
 type Discount struct {
